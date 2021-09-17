@@ -1,3 +1,4 @@
+const { response } = require("express");
 const express = require("express");
 const { v4: uuidv4 } = require("uuid");
 
@@ -119,6 +120,21 @@ app.get("/statement/date", verifyIfExistsAccountCPF, (request, response) => {
     const statement = customer.statement.filter((statement) => statement.created_at.toDateString() === new Date(dateFormat).toDateString());
 
     return response.json(statement);
-})
+});
+// Atualizar dados do cliente
+app.put("/account", verifyIfExistsAccountCPF, (request, response) => {
+    const { name } = request.body;
+    const { customer } = request;
+
+    customer.name = name;
+
+    return response.status(201).send();
+});
+
+// Obter dados do cliente
+app.get("/account", verifyIfExistsAccountCPF, (request, response) => {
+    const { customer } = request;
+    return response.json(customer);
+});
 
 app.listen(3333);

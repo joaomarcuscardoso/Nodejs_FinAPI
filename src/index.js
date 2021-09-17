@@ -50,7 +50,6 @@ app.post("/account", (request, response) => {
 
 });
 
-
 /**
  * Check statement
  */
@@ -59,6 +58,23 @@ app.get("/statement/", verifyIfExistsAccountCPF, (request, response) => {
     const { customer } = request;
     // returned status 200 of default
     return response.json(customer.statement);
+});
+
+app.post("/deposit", verifyIfExistsAccountCPF, (request, response) => {
+    const { description, amount } = request.body;
+    const { customer } = request;
+
+
+    const statementOperation = {
+        description,
+        amount,
+        created_at: new Date(),
+        type: "credit"
+    }
+
+    customer.statement.push(statementOperation);
+
+    return response.status(201).send();
 });
 
 app.listen(3333);
